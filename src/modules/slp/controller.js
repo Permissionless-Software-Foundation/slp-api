@@ -9,13 +9,12 @@ const RpcClient = require('bitcoin-rpc-promise-retry')
 
 const config = require('../../../config')
 
+const wlogger = require('../../lib/wlogger')
+
 let _this
 
 class SLP {
   constructor () {
-    _this = this
-    console.log('')
-
     // Instantiate the RPC connection to the full node.
     const connectionString = `http://${config.rpcUserName}:${
       config.rpcPassword
@@ -32,9 +31,12 @@ class SLP {
         return rawTx
       }
     })
+
+    _this = this
   }
 
   // Validates an SLP token TXID.
+  // curl -X GET http://127.0.0.1:5001/slp/validate/0e2fc27ec0438cd7e1ac6d4b549e218e6663c75480248f5cc6361cb11c742d74
   async validateTxid (ctx, next) {
     // console.log(`ctx: ${JSON.stringify(ctx, null, 2)}`)
 
@@ -43,11 +45,12 @@ class SLP {
 
       // Get the raw transaction from the full node.
       try {
-        await this.slpValidator.getRawTransaction(txid)
+        await _this.slpValidator.getRawTransaction(txid)
         // console.log('rawTx: ', rawTx)
       } catch (err) {
-        // console.log(`err with getRawTransaction(${txid}): `, err)
-        throw new Error('Error trying to get raw transaction from full node.')
+        wlogger.error(`err with getRawTransaction(${txid}): `, err)
+        // throw new Error('Error trying to get raw transaction from full node.')
+        throw err
       }
 
       // false by default.
@@ -55,7 +58,7 @@ class SLP {
 
       // Validat the TXID.
       try {
-        isValid = await this.slpValidator.isValidSlpTxid({ txid })
+        isValid = await _this.slpValidator.isValidSlpTxid({ txid })
         // console.log('isValid: ', isValid)
       } catch (error) {
         console.log(error)
@@ -66,6 +69,8 @@ class SLP {
         isValid: isValid
       }
     } catch (err) {
+      wlogger.error('Error in slp/validateTxid/txid: ', err)
+
       if (err === 404 || err.name === 'CastError') {
         ctx.throw(404)
       }
