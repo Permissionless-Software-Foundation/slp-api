@@ -32,6 +32,7 @@ describe('Contact', () => {
         assert.include(err.response.data, "Property 'email' must be a string!")
       }
     })
+
     it('should throw error if email property is wrong format', async () => {
       try {
         const options = {
@@ -59,6 +60,7 @@ describe('Contact', () => {
         )
       }
     })
+
     it('should throw error if formMessage property is not provided', async () => {
       try {
         const options = {

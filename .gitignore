@@ -63,4 +63,6 @@ coverage
 database/
 system-user-*.json
 
+test-fullstack.sh
+
 !README.md
