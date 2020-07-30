@@ -1,7 +1,7 @@
 {
-  "name": "koa-api-boilerplate",
-  "version": "3.0.0",
-  "description": "Koa2 boilerplate covering essentials for REST API and auth.",
+  "name": "slp-api",
+  "version": "1.0.0",
+  "description": "A REST API using Koa for doing complex SLP tasks.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,24 +12,13 @@
     "coverage:report": "nyc --reporter=html mocha --exit",
     "prep-test": "node util/users/delete-all-test-users.js"
   },
-  "keywords": [
-    "koa-api-boilerplate",
-    "api",
-    "koa",
-    "koa2",
-    "boilerplate",
-    "es6",
-    "mongoose",
-    "passportjs",
-    "apidoc"
-  ],
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT",
   "apidoc": {
-    "title": "koa-api-boilerplate",
+    "title": "slp-api",
     "url": "localhost:5000"
   },
-  "repository": "christroutner/koa-api-boilerplate",
+  "repository": "Permissionless-Software-Foundation/slp-api",
   "dependencies": {
     "apidoc": "^0.23.0",
     "axios": "^0.19.2",
