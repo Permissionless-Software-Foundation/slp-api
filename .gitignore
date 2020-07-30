@@ -64,5 +64,6 @@ database/
 system-user-*.json
 
 test-fullstack.sh
+start-slp-api.sh
 
 !README.md
