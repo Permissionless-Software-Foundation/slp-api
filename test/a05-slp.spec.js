@@ -50,6 +50,7 @@ describe('SLP', () => {
 
       // Mock the actual network call.
       if (process.env.TEST === 'unit') {
+        sandbox.stub(slp.rpc, 'getRawTransaction').resolves(mockTx)
         sandbox.stub(slp.slpValidator, 'getRawTransaction').resolves(mockTx)
       }
 
@@ -70,6 +71,7 @@ describe('SLP', () => {
 
       // Mock the actual network call for unit tests.
       if (process.env.TEST === 'unit') {
+        sandbox.stub(slp.rpc, 'getRawTransaction').resolves(mockTx)
         sandbox.stub(slp.slpValidator, 'getRawTransaction').resolves(mockTx)
       }
 
