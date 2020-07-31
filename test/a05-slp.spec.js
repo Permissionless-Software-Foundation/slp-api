@@ -44,7 +44,9 @@ describe('SLP', () => {
   afterEach(() => sandbox.restore())
 
   describe('GET /validate/:txid', () => {
-    // Mock the actual network call for unit tests.
+    // Only run these tests if this is an integration test.
+    // Because of the way slp-validate is structured, it's incredibly difficult
+    // to mock for unit tests.
     if (process.env.TEST !== 'unit') {
       it('should validate a genesis txid', async () => {
         // const mockTx =
