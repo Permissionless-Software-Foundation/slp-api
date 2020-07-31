@@ -15,6 +15,8 @@ let _this
 
 class SLP {
   constructor () {
+    _this = this
+
     // Instantiate the RPC connection to the full node.
     const connectionString = `http://${config.rpcUserName}:${
       config.rpcPassword
@@ -31,8 +33,6 @@ class SLP {
         return rawTx
       }
     })
-
-    _this = this
   }
 
   // Validates an SLP token TXID.
