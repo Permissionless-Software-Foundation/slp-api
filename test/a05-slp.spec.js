@@ -112,6 +112,7 @@ describe('SLP', () => {
         assert.include(err.message, 'Input must be an array')
       }
     })
+
     it('should throw error if Array is empty', async () => {
       try {
         const body = {
@@ -158,6 +159,7 @@ describe('SLP', () => {
         assert.include(err.message, 'Array too long, max length is 20')
       }
     })
+
     it('should return utxo details', async () => {
       try {
         const utxos = [

@@ -12,7 +12,7 @@ const config = require('../../../config')
 const wlogger = require('../../lib/wlogger')
 
 const BCHJS = require('@chris.troutner/bch-js')
-const bchjs = new BCHJS({ restURL: 'https://free-api.fullstack.cash/v3/' })
+const bchjs = new BCHJS({ restURL: config.restURL })
 
 let _this
 
