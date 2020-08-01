@@ -11,5 +11,10 @@ module.exports.routes = [
     method: 'GET',
     route: '/validate/:txid',
     handlers: [slp.validateTxid]
+  },
+  {
+    method: 'POST',
+    route: '/hydrateutxos',
+    handlers: [slp.hydrateUtxos]
   }
 ]

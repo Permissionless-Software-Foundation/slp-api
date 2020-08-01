@@ -39,6 +39,11 @@ describe('SLP', () => {
 
     ctx = Object.assign({}, mockData.ctxMock)
     ctx.params = {}
+    ctx.request = {}
+    ctx.throw = () => {
+      const err = this.err
+      throw err
+    }
   })
 
   afterEach(() => sandbox.restore())
@@ -90,5 +95,120 @@ describe('SLP', () => {
         assert.equal(ctx.body.isValid, false)
       })
     }
+  })
+
+  describe('POST /hydrateutxos', () => {
+    it('should throw error if input is not an array.', async () => {
+      try {
+        const body = {
+          utxos: 'test'
+        }
+
+        ctx.request.body = body
+        await slp.hydrateUtxos(ctx)
+
+        assert.equal(true, false, 'Unexpected result.')
+      } catch (err) {
+        assert.include(err.message, 'Input must be an array')
+      }
+    })
+    it('should throw error if Array is empty', async () => {
+      try {
+        const body = {
+          utxos: []
+        }
+        ctx.request.body = body
+        await slp.hydrateUtxos(ctx)
+
+        assert.equal(true, false, 'Unexpected result.')
+      } catch (err) {
+        assert.include(err.message, 'Array should not be empty')
+      }
+    })
+
+    it('should throw error if Array is too long', async () => {
+      try {
+        const utxo = {
+          txid:
+            'bd158c564dd4ef54305b14f44f8e94c44b649f246dab14bcb42fb0d0078b8a90',
+          vout: 3,
+          amount: 0.00002015,
+          satoshis: 2015,
+          height: 594892,
+          confirmations: 5
+        }
+
+        const utxos = []
+
+        // Populate array with 21 utxos
+        for (let i = 0; i < 21; i++) {
+          utxos.push(utxo)
+        }
+
+        const body = {
+          utxos: utxos
+        }
+
+        ctx.request.body = body
+
+        await slp.hydrateUtxos(ctx)
+
+        assert.equal(true, false, 'Unexpected result.')
+      } catch (err) {
+        assert.include(err.message, 'Array too long, max length is 20')
+      }
+    })
+    it('should return utxo details', async () => {
+      try {
+        const utxos = [
+          {
+            txid:
+              'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+            vout: 3,
+            value: '6816',
+            height: 606848,
+            confirmations: 13,
+            satoshis: 6816
+          },
+          {
+            txid:
+              'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+            vout: 2,
+            value: '546',
+            height: 606848,
+            confirmations: 13,
+            satoshis: 546
+          }
+        ]
+        const body = {
+          utxos: utxos
+        }
+
+        ctx.request.body = body
+
+        // Add mocks for unit test
+        if (process.env.TEST === 'unit') {
+          sandbox
+            .stub(slp.bchjs.SLP.Utils, 'tokenUtxoDetails')
+            .resolves(mockData.hydrateRes)
+        }
+
+        await slp.hydrateUtxos(ctx)
+
+        const result = ctx.body.details
+
+        assert.isArray(result)
+        assert.equal(result.length, 2)
+        assert.property(result[0], 'txid')
+        assert.property(result[0], 'vout')
+        assert.property(result[0], 'value')
+        assert.property(result[0], 'height')
+        assert.property(result[0], 'confirmations')
+        assert.property(result[0], 'satoshis')
+        assert.property(result[0], 'isValid')
+      } catch (err) {
+        assert.equal(true, false, 'Unexpected result.')
+      }
+    })
   })
 })
