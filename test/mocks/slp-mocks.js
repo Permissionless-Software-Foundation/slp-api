@@ -35,6 +35,27 @@ const mockCtx = {
   socket: '<original node socket>'
 }
 
+const hydrateRes = [
+  {
+    txid: 'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+    vout: 3,
+    value: '6816',
+    height: 606848,
+    confirmations: 13,
+    satoshis: 6816,
+    isValid: false
+  },
+  {
+    txid: 'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+    vout: 2,
+    value: '546',
+    height: 606848,
+    confirmations: 13,
+    satoshis: 546,
+    isValid: false
+  }
+]
+
 const mockValidatorType1 = class ValidatorType1 {
   constructor () {
     this.logger = {}
@@ -46,5 +67,6 @@ const mockValidatorType1 = class ValidatorType1 {
 
 module.exports = {
   mockCtx,
+  hydrateRes,
   mockValidatorType1
 }

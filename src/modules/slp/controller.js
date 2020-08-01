@@ -11,12 +11,15 @@ const config = require('../../../config')
 
 const wlogger = require('../../lib/wlogger')
 
+const BCHJS = require('@chris.troutner/bch-js')
+const bchjs = new BCHJS({ restURL: 'https://free-api.fullstack.cash/v3/' })
+
 let _this
 
 class SLP {
   constructor () {
     _this = this
-
+    this.bchjs = bchjs
     // Instantiate the RPC connection to the full node.
     const connectionString = `http://${config.rpcUserName}:${
       config.rpcPassword
@@ -80,6 +83,37 @@ class SLP {
 
     if (next) {
       return next()
+    }
+  }
+
+  // Get utxo details
+  async hydrateUtxos (ctx) {
+    try {
+      const utxos = ctx.request.body.utxos
+
+      // Validate inputs
+      if (!Array.isArray(utxos)) {
+        throw new Error('Input must be an array.')
+      }
+
+      if (!utxos.length) {
+        throw new Error('Array should not be empty')
+      }
+
+      if (utxos.length > 20) {
+        throw new Error('Array too long, max length is 20')
+      }
+
+      // Get Token Utxo Details
+      const details = await _this.bchjs.SLP.Utils.tokenUtxoDetails(utxos)
+      // console.log('details : ', details)
+      ctx.body = {
+        details
+      }
+      // return details
+    } catch (err) {
+      wlogger.error('Error in slp/hydrateUtxos() ', err)
+      throw err
     }
   }
 }
