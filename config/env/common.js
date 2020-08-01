@@ -15,5 +15,8 @@ module.exports = {
   // BCH Full Node RPC
   rpcUserName: process.env.RPC_USER_NAME ? process.env.RPC_USER_NAME : 'bitcoin',
   rpcPassword: process.env.RPC_PASSWORD ? process.env.RPC_PASSWORD : 'password',
-  rpcUrl: process.env.RPC_URL ? process.env.RPC_URL : '0.0.0.0:8332'
+  rpcUrl: process.env.RPC_URL ? process.env.RPC_URL : '0.0.0.0:8332',
+
+  // bch-api REST URL
+  restURL: process.env.RESTURL ? process.env.RESTURL : 'https://free-api.fullstack.cash/v3/'
 }
