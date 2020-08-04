@@ -16,7 +16,7 @@ const adminLib = require('../src/lib/admin')
 const errorMiddleware = require('../src/middleware')
 const wlogger = require('../src/lib/wlogger')
 
-const { getJwt } = require('./jwt')
+const { getJwt } = require('../src/lib/jwt')
 
 async function startServer () {
   // Create a Koa instance.

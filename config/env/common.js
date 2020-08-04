@@ -18,5 +18,9 @@ module.exports = {
   rpcUrl: process.env.RPC_URL ? process.env.RPC_URL : '0.0.0.0:8332',
 
   // bch-api REST URL
-  restURL: process.env.RESTURL ? process.env.RESTURL : 'https://free-api.fullstack.cash/v3/'
+  restURL: process.env.RESTURL ? process.env.RESTURL : 'https://free-api.fullstack.cash/v3/',
+
+  // FullStack.cash REST API credentials.
+  fullstackLogin: process.env.FULLSTACKLOGIN ? process.env.FULLSTACKLOGIN : 'demo@demo.com',
+  fullstackPass: process.env.FULLSTACKPASS ? process.env.FULLSTACKPASS : 'demo'
 }

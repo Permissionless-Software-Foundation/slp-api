@@ -1,14 +1,16 @@
+const config = require('../../config')
+
 // Instantiate the JWT handling library for FullStack.cash.
 const JwtLib = require('jwt-bch-lib')
 const jwtLib = new JwtLib({
   // Overwrite default values with the values in the config file.
   server: 'https://auth.fullstack.cash',
-  login: process.env.FULLSTACKLOGIN,
-  password: process.env.FULLSTACKPASS
+  login: config.fullstackLogin,
+  password: config.fullstackPass
 })
 
 // Winston logger
-const wlogger = require('../src/lib/wlogger')
+const wlogger = require('./wlogger')
 
 async function getJwt () {
   try {
