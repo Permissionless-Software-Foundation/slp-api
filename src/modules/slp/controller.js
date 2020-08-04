@@ -40,6 +40,7 @@ class SLP {
 
   // Validates an SLP token TXID.
   // curl -X GET http://127.0.0.1:5001/slp/validate/0e2fc27ec0438cd7e1ac6d4b549e218e6663c75480248f5cc6361cb11c742d74
+  // curl -X GET https://slp-api.fullstack.cash/slp/validate/0e2fc27ec0438cd7e1ac6d4b549e218e6663c75480248f5cc6361cb11c742d74
   async validateTxid (ctx, next) {
     // console.log(`ctx: ${JSON.stringify(ctx, null, 2)}`)
 
