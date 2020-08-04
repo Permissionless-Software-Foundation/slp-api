@@ -161,56 +161,52 @@ describe('SLP', () => {
     })
 
     it('should return utxo details', async () => {
-      try {
-        const utxos = [
-          {
-            txid:
-              'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
-            vout: 3,
-            value: '6816',
-            height: 606848,
-            confirmations: 13,
-            satoshis: 6816
-          },
-          {
-            txid:
-              'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
-            vout: 2,
-            value: '546',
-            height: 606848,
-            confirmations: 13,
-            satoshis: 546
-          }
-        ]
-        const body = {
-          utxos: utxos
+      const utxos = [
+        {
+          txid:
+            'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+          vout: 3,
+          value: '6816',
+          height: 606848,
+          confirmations: 13,
+          satoshis: 6816
+        },
+        {
+          txid:
+            'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+          vout: 2,
+          value: '546',
+          height: 606848,
+          confirmations: 13,
+          satoshis: 546
         }
-
-        ctx.request.body = body
-
-        // Add mocks for unit test
-        if (process.env.TEST === 'unit') {
-          sandbox
-            .stub(slp.bchjs.SLP.Utils, 'tokenUtxoDetails')
-            .resolves(mockData.hydrateRes)
-        }
-
-        await slp.hydrateUtxos(ctx)
-
-        const result = ctx.body.details
-
-        assert.isArray(result)
-        assert.equal(result.length, 2)
-        assert.property(result[0], 'txid')
-        assert.property(result[0], 'vout')
-        assert.property(result[0], 'value')
-        assert.property(result[0], 'height')
-        assert.property(result[0], 'confirmations')
-        assert.property(result[0], 'satoshis')
-        assert.property(result[0], 'isValid')
-      } catch (err) {
-        assert.equal(true, false, 'Unexpected result.')
+      ]
+      const body = {
+        utxos: utxos
       }
+
+      ctx.request.body = body
+
+      // Add mocks for unit test
+      if (process.env.TEST === 'unit') {
+        sandbox
+          .stub(slp.bchjs.SLP.Utils, 'tokenUtxoDetails')
+          .resolves(mockData.hydrateRes)
+      }
+
+      await slp.hydrateUtxos(ctx)
+
+      const result = ctx.body.details
+
+      assert.isArray(result)
+      assert.equal(result.length, 2)
+      assert.property(result[0], 'txid')
+      assert.property(result[0], 'vout')
+      assert.property(result[0], 'value')
+      assert.property(result[0], 'height')
+      assert.property(result[0], 'confirmations')
+      assert.property(result[0], 'satoshis')
+      assert.property(result[0], 'isValid')
     })
   })
 })
