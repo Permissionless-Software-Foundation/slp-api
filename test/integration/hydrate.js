@@ -30,7 +30,6 @@ describe('#hydrate', () => {
     ]
 
     const result = await axios.post(`${SERVER}/slp/hydrateutxos`, { utxos })
-    console.log(`result.data: ${JSON.stringify(result.data, null, 2)}`)
 
     console.log(`Hydrated UTXO data:\n${JSON.stringify(result.data.details, null, 2)}`)
   })
