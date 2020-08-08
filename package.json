@@ -11,7 +11,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "coverage:report": "nyc --reporter=html mocha --exit",
     "prep-test": "node util/users/delete-all-test-users.js",
-    "test:integration": "mocha --timeout 30000 test/integration/"
+    "test:integration": "mocha --timeout 30000 test/integration/ --exit"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT",

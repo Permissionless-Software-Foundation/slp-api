@@ -6,19 +6,21 @@
 
 // const config = require('../../config')
 
-const testUtils = require('./utils')
+// const testUtils = require('./utils')
 // const rp = require('request-promise')
 const assert = require('chai').assert
 const sinon = require('sinon')
+const axios = require('axios').default
 
-// const LOCALHOST = `http://localhost:${config.port}`
+const config = require('../config')
+const LOCALHOST = `http://localhost:${config.port}`
 
 const SLP = require('../src/modules/slp/controller')
 const slp = new SLP()
 
 const mockData = require('./mocks/slp-mocks')
 
-const context = {}
+// const context = {}
 
 // Default to unit tests unless something else is specified
 if (!process.env.TEST) process.env.TEST = 'unit'
@@ -28,10 +30,10 @@ describe('SLP', () => {
   let ctx
 
   before(async () => {
-    const testUser = await testUtils.loginTestUser()
+    // const testUser = await testUtils.loginTestUser()
     // console.log(`testUser: ${JSON.stringify(testUser, null, 2)}`)
 
-    context.testUser = testUser
+    // context.testUser = testUser
   })
 
   beforeEach(() => {
@@ -100,30 +102,39 @@ describe('SLP', () => {
   describe('POST /hydrateutxos', () => {
     it('should throw error if input is not an array.', async () => {
       try {
-        const body = {
-          utxos: 'test'
+        const options = {
+          method: 'POST',
+          url: `${LOCALHOST}/slp/hydrateutxos`,
+          data: {
+            utxos: 'test'
+          }
         }
 
-        ctx.request.body = body
-        await slp.hydrateUtxos(ctx)
+        await axios(options)
 
         assert.equal(true, false, 'Unexpected result.')
       } catch (err) {
-        assert.include(err.message, 'Input must be an array')
+        assert.equal(err.response.status, 422)
+        assert.include(err.response.data, 'Input must be an array')
       }
     })
 
     it('should throw error if Array is empty', async () => {
       try {
-        const body = {
-          utxos: []
+        const options = {
+          method: 'POST',
+          url: `${LOCALHOST}/slp/hydrateutxos`,
+          data: {
+            utxos: []
+          }
         }
-        ctx.request.body = body
-        await slp.hydrateUtxos(ctx)
+
+        await axios(options)
 
         assert.equal(true, false, 'Unexpected result.')
       } catch (err) {
-        assert.include(err.message, 'Array should not be empty')
+        assert.equal(err.response.status, 422)
+        assert.include(err.response.data, 'Array should not be empty')
       }
     })
 
@@ -146,67 +157,66 @@ describe('SLP', () => {
           utxos.push(utxo)
         }
 
-        const body = {
-          utxos: utxos
+        const options = {
+          method: 'POST',
+          url: `${LOCALHOST}/slp/hydrateutxos`,
+          data: {
+            utxos: utxos
+          }
         }
 
-        ctx.request.body = body
-
-        await slp.hydrateUtxos(ctx)
+        await axios(options)
 
         assert.equal(true, false, 'Unexpected result.')
       } catch (err) {
-        assert.include(err.message, 'Array too long, max length is 20')
+        assert.equal(err.response.status, 422)
+        assert.include(err.response.data, 'Array too long, max length is 20')
       }
     })
+    // Only run these tests if this is an integration test.
+    if (process.env.TEST !== 'unit') {
+      it('should return utxo details', async () => {
+        const utxos = [
+          {
+            txid:
+            'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+            vout: 3,
+            value: '6816',
+            height: 606848,
+            confirmations: 13,
+            satoshis: 6816
+          },
+          {
+            txid:
+            'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
+            vout: 2,
+            value: '546',
+            height: 606848,
+            confirmations: 13,
+            satoshis: 546
+          }
+        ]
 
-    it('should return utxo details', async () => {
-      const utxos = [
-        {
-          txid:
-            'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
-          vout: 3,
-          value: '6816',
-          height: 606848,
-          confirmations: 13,
-          satoshis: 6816
-        },
-        {
-          txid:
-            'd56a2b446d8149c39ca7e06163fe8097168c3604915f631bc58777d669135a56',
-          vout: 2,
-          value: '546',
-          height: 606848,
-          confirmations: 13,
-          satoshis: 546
+        const options = {
+          method: 'POST',
+          url: `${LOCALHOST}/slp/hydrateutxos`,
+          data: {
+            utxos: utxos
+          }
         }
-      ]
-      const body = {
-        utxos: utxos
-      }
 
-      ctx.request.body = body
-
-      // Add mocks for unit test
-      if (process.env.TEST === 'unit') {
-        sandbox
-          .stub(slp.bchjs.SLP.Utils, 'tokenUtxoDetails')
-          .resolves(mockData.hydrateRes)
-      }
-
-      await slp.hydrateUtxos(ctx)
-
-      const result = ctx.body.details
-
-      assert.isArray(result)
-      assert.equal(result.length, 2)
-      assert.property(result[0], 'txid')
-      assert.property(result[0], 'vout')
-      assert.property(result[0], 'value')
-      assert.property(result[0], 'height')
-      assert.property(result[0], 'confirmations')
-      assert.property(result[0], 'satoshis')
-      assert.property(result[0], 'isValid')
-    })
+        const axiosResult = await axios(options)
+        const result = axiosResult.data.details
+        assert.isArray(result)
+        assert.equal(result.length, 2)
+        assert.property(result[0], 'txid')
+        assert.property(result[0], 'vout')
+        assert.property(result[0], 'value')
+        assert.property(result[0], 'height')
+        assert.property(result[0], 'confirmations')
+        assert.property(result[0], 'satoshis')
+        assert.property(result[0], 'isValid')
+      })
+    }
   })
 })

@@ -113,8 +113,8 @@ class SLP {
       }
       // return details
     } catch (err) {
-      wlogger.error('Error in slp/hydrateUtxos() ', err)
-      throw err
+      // wlogger.error('Error in slp/hydrateUtxos() ', err)
+      ctx.throw(422, err.message)
     }
   }
 }
