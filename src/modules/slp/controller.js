@@ -108,6 +108,7 @@ class SLP {
       // Get Token Utxo Details
       const details = await _this.bchjs.SLP.Utils.tokenUtxoDetails(utxos)
       // console.log('details : ', details)
+
       ctx.body = {
         details
       }
